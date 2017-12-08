@@ -27,8 +27,8 @@ m = size(X, 1);
          
 % You need to return the following variables correctly 
 J = 0;
-Theta1_grad = zeros(size(Theta1));
-Theta2_grad = zeros(size(Theta2));
+D1 = zeros(size(Theta1));
+D2 = zeros(size(Theta2));
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
@@ -102,20 +102,21 @@ for t = 1:m
 	delta2 = delta2(2:end); 
 
 	% Big delta update
-	Theta1_grad = Theta1_grad + delta2 * a1';
-	Theta2_grad = Theta2_grad + delta3 * a2';
+	D1 = D1 + delta2 * a1';
+	D2 = D2 + delta3 * a2';
 end
 
-Theta1_grad = (1/m) * Theta1_grad;
+D1 = (1/m) * D1;
 reg = (lambda/m) * [zeros(size(Theta1, 1), 1) Theta1(:,2:end)];
-Theta1_grad = Theta1_grad + reg;
-Theta2_grad = (1/m) * Theta2_grad; 
+D1 = D1 + reg;
+
+D2 = (1/m) * D2; 
 reg = (lambda/m) * [zeros(size(Theta2, 1), 1) Theta2(:,2:end)];
-Theta2_grad = Theta2_grad + reg;
+D2 = D2 + reg;
 % =========================================================================
 
 % Unroll gradients
-grad = [Theta1_grad(:) ; Theta2_grad(:)];
+grad = [D1(:) ; D2(:)];
 
 
 end
