@@ -64,30 +64,50 @@ Theta2_grad = zeros(size(Theta2));
 a1 = [ones(m,1) X];
 a2 = [ones(size(a1, 1),1) sigmoid(a1*Theta1')];
 h  = sigmoid(a2*Theta2');
-size(h)
+% size(h)
 Y = zeros(m,num_labels);
 for i =1:m
-    Y(i,y(i))
-%y = eyes(m,num_labels);
-%J = (1/m)* ((-y'*log(h)) - (1-y)'*log(1-h));
+    Y(i,y(i))=1;
+end
+%J = (1/m)* ((-Y'*log(h)) - (1-Y)'*log(1-h));
 
+J = 1/m * sum(sum(-Y.*log(h) - (1-Y).*log(1-h)));
 
+reg = (sum(sum(Theta1(:,2:end).^2)) + sum(sum(Theta2(:,2:end).^2))) * (lambda/(2*m));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+J = J + reg;
 
 % -------------------------------------------------------------
+for t = 1:m
+    %For the input layer
+	%l=1
+    a1 = [1; X(t,:)'];
+    
+    %For the hidden layers
+	%l=2
+    z2 = Theta1 * a1;
+	a2 = [1; sigmoid(z2)];
+
+    %For the output layer
+    %l=3
+	z3 = Theta2 * a2;
+	a3 = sigmoid(z3);
+
+	yk = ([1:num_labels]==y(t))';
+	% For the delta values:
+	delta3 = a3 - yk;
+
+	delta2 = (Theta2'*delta3).*[1; sigmoidGradient(z2)];
+    % Remove bias row delta20
+	delta2 = delta2(2:end); 
+
+	% Big delta update
+	Theta1_grad = Theta1_grad + delta_2 * a1';
+	Theta2_grad = Theta2_grad + delta_3 * a2';
+end
+
+Theta1_grad = (1/m) * Theta1_grad + (lambda/m) * [zeros(size(Theta1, 1), 1) Theta1(:,2:end)];
+Theta2_grad = (1/m) * Theta2_grad + (lambda/m) * [zeros(size(Theta2, 1), 1) Theta2(:,2:end)];
 
 % =========================================================================
 
